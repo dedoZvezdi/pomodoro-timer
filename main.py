@@ -4,12 +4,13 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
-WIDTH = HEIGHT = 600
+WIDTH = 600
+HEIGHT = 50
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 FPS = 60
 clock = pygame.time.Clock()
-font1 = pygame.font.SysFont("Consolas", HEIGHT // 20)
+font1 = pygame.font.SysFont("Consolas", HEIGHT // 2)
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pomodoro")
@@ -49,7 +50,7 @@ def restart_timer(event):
 
 def create_file():
     with open("time.txt", "w") as file:
-        file.write("0:0:5\n")
+        file.write("0:30:0\n")
         file.write("alarm.wav")
 
 def read_file():
