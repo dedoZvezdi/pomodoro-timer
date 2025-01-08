@@ -99,14 +99,14 @@ last_tick = pygame.time.get_ticks()
 
 while run:
     current_tick = pygame.time.get_ticks()
+    elapsed = (current_tick - last_tick) / 1000
+    last_tick = current_tick
     if not timer_stop:
-        elapsed = (current_tick - last_tick) / 1000
         seconds_remaining -= elapsed
-        last_tick = current_tick
-        
 
     if seconds_remaining <= 0:
         timer_stop = True
+        print(seconds_remaining)
         seconds_remaining = seconds_set
         if alarm_path:
             pygame.mixer.music.play(-1)
