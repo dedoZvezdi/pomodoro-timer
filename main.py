@@ -1,5 +1,6 @@
 import pygame
 import os
+from visuals import display_time, running_sonic_display, waiting_sonic_display
 
 pygame.init()
 pygame.font.init()
@@ -12,13 +13,18 @@ WHITE = (255, 255, 255)
 FPS = 60
 font1 = pygame.font.SysFont("Consolas", HEIGHT // 10)
 
+
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pomodoro")
+
+study_seconds = 0
+rest_seconds = 0
 
 seconds_set = 0
 seconds_remaining = seconds_set 
 timer_stop = True
 alarm_path = None
+session = True # True for study session || False for pause session
 
 def count_sprites(directory):
     items = os.listdir(directory)
@@ -28,37 +34,14 @@ def count_sprites(directory):
 running_sprites_len = count_sprites(".//running_sonic")
 waiting_sonic_len = count_sprites(".//waiting_sonic")
 
-def display_time(win):
-    hours = seconds_remaining // 3600
-    minutes = (seconds_remaining - hours * 3600) // 60
-    seconds = (seconds_remaining - hours * 3600 - minutes * 60)
-    msg = font1.render(f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}", True, BLACK)
-    win.blit(msg, (WIDTH // 2 - msg.get_width() // 2, msg.get_height() // 2))
-
-def running_sonic_display(win):
-    index = int(current_tick / 60 % running_sprites_len) + 1
-    try:
-        running_sonic = pygame.image.load(f"running_sonic//{index}_r.png")
-        win.blit(running_sonic, (WIDTH // 2 - running_sonic.get_width() // 2, HEIGHT - running_sonic.get_height() - 10))
-    except pygame.error:
-        print(f"Image {index}_r.png missing!")
-
-def waiting_sonic_display(win):
-    index = int(current_tick / 60 % waiting_sonic_len)
-    try:
-        waiting_sonic = pygame.image.load(f"waiting_sonic//{index}_w.png")
-        scaled_image = pygame.transform.scale(waiting_sonic, (128, 144))
-        win.blit(scaled_image, (WIDTH // 2 - scaled_image.get_width() // 2, HEIGHT - scaled_image.get_height() - 10))
-    except pygame.error:
-        print(f"Image {index}_w.png missing!")
 
 def draw_scene(win):
     win.fill(WHITE)
-    display_time(win)
+    display_time(win, session, font1, BLACK, WIDTH, seconds_remaining)
     if timer_stop:
-        waiting_sonic_display(win)
+        waiting_sonic_display(win, current_tick, waiting_sonic_len, WIDTH, HEIGHT,)
     else:
-        running_sonic_display(win)
+        running_sonic_display(win, current_tick , running_sprites_len, WIDTH, HEIGHT)
     pygame.display.update()
 
 def toogle_timer(event):
@@ -81,19 +64,26 @@ def create_file():
     if not os.path.exists("time.txt"):
         with open("time.txt", "w") as file:
             file.write("0:30:0\n")
+            file.write("0:10:0\n")
             file.write("alarm.wav")
 
 def read_file():
-    global seconds_set, alarm_path
+    global study_seconds, rest_seconds, alarm_path
     with open("time.txt") as file:
         lines = file.readlines()
-        time = list(map(int, lines[0].strip().split(":")))
-        seconds_set = time[0] * 3600 + time[1] * 60 + time[2]
-        alarm_path = lines[1]
+
+        study_time = list(map(int, lines[0].strip().split(":")))
+        study_seconds = study_time[0] * 3600 + study_time[1] * 60 + study_time[2]
+
+        rest_time = list(map(int, lines[1].strip().split(":")))
+        rest_seconds = rest_time[0] * 3600 + rest_time[1] * 60 + rest_time[2]
+
+        alarm_path = lines[2]
         pygame.mixer.music.load(alarm_path)
 
 
 create_file()
+read_file()
 run = True
 last_tick = pygame.time.get_ticks()
 
@@ -103,10 +93,17 @@ while run:
     last_tick = current_tick
     if not timer_stop:
         seconds_remaining -= elapsed
+    else:
+        if session:
+            seconds_remaining = study_seconds
+        else:
+            seconds_remaining = rest_seconds
+
+    if seconds_remaining <= 0 and not timer_stop: # timer hasnt stopped yet, when idle
+        session = not session
 
     if seconds_remaining <= 0:
         timer_stop = True
-        print(seconds_remaining)
         seconds_remaining = seconds_set
         if alarm_path:
             pygame.mixer.music.play(-1)
