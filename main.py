@@ -52,13 +52,28 @@ def toogle_timer(event):
             pygame.mixer.music.stop()
 
 def restart_timer(event):
-    global timer_stop, seconds_set, seconds_remaining
+    global timer_stop, seconds_remaining
     if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_RETURN:
+        if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
             timer_stop = True
             read_file()
-            seconds_remaining = seconds_set
+            if session:
+                seconds_remaining = study_seconds
+            else:
+                seconds_remaining = rest_seconds
             pygame.mixer.music.stop()
+
+def switch_session(event):
+    global timer_stop, seconds_remaining, seconds_set, session
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            timer_stop = True
+            session = not session
+            if session:
+                seconds_set = study_seconds
+            else:
+                seconds_set = rest_seconds
+            seconds_remaining = seconds_set
 
 def create_file():
     if not os.path.exists("time.txt"):
@@ -68,7 +83,7 @@ def create_file():
             file.write("alarm.wav")
 
 def read_file():
-    global study_seconds, rest_seconds, alarm_path
+    global study_seconds, rest_seconds, alarm_path, seconds_remaining
     with open("time.txt") as file:
         lines = file.readlines()
 
@@ -81,6 +96,13 @@ def read_file():
         alarm_path = lines[2]
         pygame.mixer.music.load(alarm_path)
 
+        seconds_remaining = study_seconds # program starts with study sessions
+
+def play_alarm():
+    global seconds_remaining, timer_stop
+    seconds_remaining = seconds_set
+    if alarm_path:
+        pygame.mixer.music.play(-1)
 
 create_file()
 read_file()
@@ -93,20 +115,16 @@ while run:
     last_tick = current_tick
     if not timer_stop:
         seconds_remaining -= elapsed
-    else:
+    
+    if seconds_remaining <= 0 and not timer_stop: # timer hasnt stopped yet, when idle
+        play_alarm()
+        
+        session = not session
+        timer_stop = True
         if session:
             seconds_remaining = study_seconds
         else:
             seconds_remaining = rest_seconds
-
-    if seconds_remaining <= 0 and not timer_stop: # timer hasnt stopped yet, when idle
-        session = not session
-
-    if seconds_remaining <= 0:
-        timer_stop = True
-        seconds_remaining = seconds_set
-        if alarm_path:
-            pygame.mixer.music.play(-1)
 
     draw_scene(window)
     for event in pygame.event.get():
@@ -114,5 +132,6 @@ while run:
             run = False
         toogle_timer(event)
         restart_timer(event)
+        switch_session(event)
 
 pygame.quit()
