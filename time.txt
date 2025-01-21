@@ -1,3 +1,15 @@
 0:30:0
 0:10:0
 alarm.wav
+
+
+The purpouse of this file is to set time for study and rest session.
+User can also write path of the .wav or .mp3 file that will be played after timer finishes. (third row)
+If the path isn't specifed default alaram sound will be played.
+
+Setting up time:
+First row represent study session.
+Second row is time for rest session.
+Time must be writen in this format => hour:minutes:seconds (":" is separator for integers).
+This file will automaticly be created after deletion.
+If user accidently delete instruction, they can be restored with deleting this file.

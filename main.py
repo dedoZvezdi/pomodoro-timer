@@ -82,21 +82,43 @@ def create_file():
             file.write("0:10:0\n")
             file.write("alarm.wav")
 
+            file.write("\n\n\nThe purpouse of this file is to set time for study and rest session.\n\
+User can also write path of the .wav or .mp3 file that will be played after timer finishes. (third row)\n\
+If the path isn't specifed default alaram sound will be played.\n\n\
+Setting up time:\n\
+First row represent study session.\nSecond row is time for rest session.\n\
+Time must be writen in this format => hour:minutes:seconds (\":\" is separator for integers).\n\
+This file will automaticly be created after deletion.\n\
+If user accidently delete instruction, they can be restored with deleting this file.\n")
+
 def read_file():
     global study_seconds, rest_seconds, alarm_path, seconds_remaining
-    with open("time.txt") as file:
+    create_file()
+    with open("time.txt", "r") as file:
         lines = file.readlines()
+        try:
+            study_time = list(map(int, lines[0].strip().split(":")))
+            study_seconds = study_time[0] * 3600 + study_time[1] * 60 + study_time[2]
+        except ValueError:
+            study_seconds = 0
 
-        study_time = list(map(int, lines[0].strip().split(":")))
-        study_seconds = study_time[0] * 3600 + study_time[1] * 60 + study_time[2]
+        try:
+            rest_time = list(map(int, lines[1].strip().split(":")))
+            rest_seconds = rest_time[0] * 3600 + rest_time[1] * 60 + rest_time[2]
+        except ValueError:
+            rest_seconds = 0
 
-        rest_time = list(map(int, lines[1].strip().split(":")))
-        rest_seconds = rest_time[0] * 3600 + rest_time[1] * 60 + rest_time[2]
-
-        alarm_path = lines[2]
+        try:
+            alarm_path = lines[2][:len(lines[2]) - 1] # [:len(lines[2]) - 1] for \n at the end
+        except IndexError:
+            alarm_path = "alarm.wav"
+        except pygame.error:
+            alarm_path = "alarm.wav"
         pygame.mixer.music.load(alarm_path)
 
         seconds_remaining = study_seconds # program starts with study sessions
+        if seconds_remaining > 24 * 3600:
+            seconds_remaining = 24 * 3600
 
 def play_alarm():
     global seconds_remaining, timer_stop
@@ -118,7 +140,7 @@ while run:
     
     if seconds_remaining <= 0 and not timer_stop: # timer hasnt stopped yet, when idle
         play_alarm()
-        
+
         session = not session
         timer_stop = True
         if session:
