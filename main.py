@@ -87,7 +87,9 @@ User can also write path of the .wav or .mp3 file that will be played after time
 If the path isn't specifed default alaram sound will be played.\n\n\
 Setting up time:\n\
 First row represent study session.\nSecond row is time for rest session.\n\
-Time must be writen in this format => hour:minutes:seconds (\":\" is separator for integers).\n\
+Time must be writen in this format => hour:minutes:seconds (\":\" is separator for integers).\n\n\
+Pause the timer -> SPACE\nRestart the timer by reading new values -> ENTER KEYS\n\
+Change session -> LEFT ARROW, RIGHT ARROW\n\n\
 This file will automaticly be created after deletion.\n\
 If user accidently delete instruction, they can be restored with deleting this file.\n")
 

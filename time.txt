@@ -11,5 +11,10 @@ Setting up time:
 First row represent study session.
 Second row is time for rest session.
 Time must be writen in this format => hour:minutes:seconds (":" is separator for integers).
+
+Pause the timer -> SPACE
+Restart the timer by reading new values -> ENTER KEYS
+Change session -> LEFT ARROW, RIGHT ARROW
+
 This file will automaticly be created after deletion.
 If user accidently delete instruction, they can be restored with deleting this file.
