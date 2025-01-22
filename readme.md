@@ -1,6 +1,7 @@
 # Pomodoro Timer
 
 A simple Pomodoro timer application for managing study and rest sessions.
+The core idea is minimal pomodoro timer taking the minimal space of the screen.
 
 ## Features
 
