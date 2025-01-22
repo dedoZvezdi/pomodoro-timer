@@ -1,5 +1,6 @@
 import pygame
 import os
+import sys
 from visuals import display_time, running_sonic_display, waiting_sonic_display
 
 pygame.init()
@@ -123,6 +124,23 @@ def read_file():
         if seconds_remaining > 24 * 3600:
             seconds_remaining = 24 * 3600
 
+def edit_file(event):
+    global timer_stop, seconds_remaining, seconds_set, session
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+            timer_stop = True
+            session = True
+            seconds_set = study_seconds
+            seconds_remaining = seconds_set
+            create_file()
+            file_name = "time.txt"
+            if sys.platform == "win32":
+                os.startfile(file_name)
+            elif sys.platform == "darwin":
+                os.system(f"open {file_name}")
+            else:
+                os.system(f"xdg-open {file_name}")
+
 def play_alarm():
     global seconds_remaining, timer_stop
     seconds_remaining = seconds_set
@@ -158,5 +176,6 @@ while run:
         toogle_timer(event)
         restart_timer(event)
         switch_session(event)
+        edit_file(event)
 
 pygame.quit()
