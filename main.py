@@ -12,10 +12,11 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 FPS = 60
 font1 = pygame.font.SysFont("Consolas", HEIGHT // 10)
-
+icon = pygame.image.load("icon.png")
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pomodoro")
+pygame.display.set_icon(icon)
 
 study_seconds = 0
 rest_seconds = 0
