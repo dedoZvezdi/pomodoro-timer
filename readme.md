@@ -14,12 +14,12 @@ A simple Pomodoro timer application for managing study and rest sessions.
 
 - **Left/Right Arrow Keys**: Switch between Study and Rest sessions
 - **Spacebar**: Start/Stop timer
-- **Escape**: Open time configuration file ("time.txt")
+- **Escape**: Open time configuration file (config.txt)
 - **Enter**: Load updated times from configuration file
 
 ## Configuration
 
-1. Press Escape to open "time.txt"
+1. Press Escape to open config_file
 2. Edit session durations as needed  
 3. Press Enter in the application to apply changes
 

@@ -27,6 +27,7 @@ seconds_remaining = seconds_set
 timer_stop = True
 alarm_path = None
 session = True # True for study session || False for pause session
+config_file = "config.txt"
 
 def count_sprites(directory):
     items = os.listdir(directory)
@@ -78,8 +79,8 @@ def switch_session(event):
             seconds_remaining = seconds_set
 
 def create_file():
-    if not os.path.exists("time.txt"):
-        with open("time.txt", "w") as file:
+    if not os.path.exists(config_file):
+        with open(config_file, "w") as file:
             file.write("0:30:0\n")
             file.write("0:10:0\n")
             file.write("alarm.wav")
@@ -98,7 +99,7 @@ If user accidently delete instruction, they can be restored with deleting this f
 def read_file():
     global study_seconds, rest_seconds, alarm_path, seconds_remaining
     create_file()
-    with open("time.txt", "r") as file:
+    with open(config_file, "r") as file:
         lines = file.readlines()
         try:
             study_time = list(map(int, lines[0].strip().split(":")))
@@ -133,7 +134,7 @@ def edit_file(event):
             seconds_set = study_seconds
             seconds_remaining = seconds_set
             create_file()
-            file_name = "time.txt"
+            file_name = config_file
             if sys.platform == "win32":
                 os.startfile(file_name)
             elif sys.platform == "darwin":
