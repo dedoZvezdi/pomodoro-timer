@@ -34,5 +34,6 @@ pip install pygame
 
 ## Instalation for Windows
 
-**[⬇ Download the Installer from this repo](./installer.exe)*
-**[⬇ Download the Installer from MediaFire](https://www.mediafire.com/file/0x801mpc35rl52b/installer.exe/file)***
+**[⬇ Download the Installer from this repo](./installer.exe)**
+
+**[⬇ Download the Installer from MediaFire](https://www.mediafire.com/file/0x801mpc35rl52b/installer.exe/file)**
