@@ -24,9 +24,14 @@ The core idea is minimal pomodoro timer taking the minimal space of the screen.
 2. Edit session durations as needed  
 3. Press Enter in the application to apply changes
 
-## Intallation
+## Required packages
 
 - Make sure python 3.x is installed on your machine
 - Install pygame module with
 ```bash
 pip install pygame
+```
+
+## Instalation for Windows
+
+**[⬇ Download the Installer](./installer.exe)**
