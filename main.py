@@ -1,16 +1,17 @@
 import pygame
 import os
 import sys
-from visuals import display_time, running_sonic_display, waiting_sonic_display
+from visuals import display_time, running_sonic_display, waiting_sonic_display, display_circle
 
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
 WIDTH = 400
-HEIGHT = 225
+HEIGHT = 300
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+BLUE = (22, 65, 221)
 FPS = 60
 font1 = pygame.font.SysFont("Consolas", HEIGHT // 10)
 icon = pygame.image.load("icon.ico")
@@ -40,9 +41,10 @@ waiting_sonic_len = count_sprites(".//waiting_sonic")
 
 def draw_scene(win):
     win.fill(WHITE)
+    display_circle(win, BLUE, WIDTH, HEIGHT, seconds_remaining, seconds_set)
     display_time(win, session, font1, BLACK, WIDTH, seconds_remaining)
     if timer_stop:
-        waiting_sonic_display(win, current_tick, waiting_sonic_len, WIDTH, HEIGHT,)
+        waiting_sonic_display(win, current_tick, waiting_sonic_len, WIDTH, HEIGHT)
     else:
         running_sonic_display(win, current_tick , running_sprites_len, WIDTH, HEIGHT)
     pygame.display.update()
@@ -55,15 +57,16 @@ def toogle_timer(event):
             pygame.mixer.music.stop()
 
 def restart_timer(event):
-    global timer_stop, seconds_remaining
+    global timer_stop, seconds_remaining, seconds_set
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
             timer_stop = True
             read_file()
             if session:
-                seconds_remaining = study_seconds
+                seconds_set = study_seconds
             else:
-                seconds_remaining = rest_seconds
+                seconds_set = rest_seconds
+            seconds_remaining = seconds_set
             pygame.mixer.music.stop()
 
 def switch_session(event):
@@ -97,7 +100,7 @@ This file will automaticly be created after deletion.\n\
 If user accidently delete instruction, they can be restored with deleting this file.\n")
 
 def read_file():
-    global study_seconds, rest_seconds, alarm_path, seconds_remaining
+    global study_seconds, rest_seconds, alarm_path, seconds_remaining, seconds_set
     create_file()
     with open(config_file, "r") as file:
         lines = file.readlines()
@@ -121,6 +124,7 @@ def read_file():
             alarm_path = "alarm.wav"
         pygame.mixer.music.load(alarm_path)
 
+        seconds_set = study_seconds
         seconds_remaining = study_seconds # program starts with study sessions
         if seconds_remaining > 24 * 3600:
             seconds_remaining = 24 * 3600
@@ -167,8 +171,10 @@ while run:
         timer_stop = True
         if session:
             seconds_remaining = study_seconds
+            seconds_set = study_seconds
         else:
             seconds_remaining = rest_seconds
+            seconds_set = rest_seconds
 
     draw_scene(window)
     for event in pygame.event.get():
