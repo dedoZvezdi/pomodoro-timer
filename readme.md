@@ -35,3 +35,14 @@ if ```config.txt``` is deleted, program generate this file with default configur
 ```bash
 pip install pygame
 ```
+
+## How to run
+### For linux distros
+```bash
+python3 main.py
+```
+
+### For Windows
+```bash
+python main.py
+```
