@@ -128,6 +128,7 @@ def read_file():
         seconds_remaining = study_seconds # program starts with study sessions
         if seconds_remaining > 24 * 3600:
             seconds_remaining = 24 * 3600
+            seconds_set = 24 * 3600
 
 def edit_file(event):
     global timer_stop, seconds_remaining, seconds_set, session
@@ -157,7 +158,9 @@ read_file()
 run = True
 last_tick = pygame.time.get_ticks()
 
+clock = pygame.time.Clock()
 while run:
+    clock.tick(FPS)
     current_tick = pygame.time.get_ticks()
     elapsed = (current_tick - last_tick) / 1000
     last_tick = current_tick
