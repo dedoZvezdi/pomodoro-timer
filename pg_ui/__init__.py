@@ -2,6 +2,7 @@ import pygame
 import os
 import sys
 from visuals import display_time, running_sonic_display, waiting_sonic_display, display_circle
+from config_ui import Config_window
 from constants import *
 
 class Pg_window:
@@ -125,6 +126,8 @@ If user accidently delete instruction, they can be restored with deleting this f
     def edit_file(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
+                Config_window().show()
+
                 self.timer_stop = True
                 self.session = True
                 self.seconds_set = self.study_seconds

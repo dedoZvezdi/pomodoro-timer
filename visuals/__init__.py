@@ -1,5 +1,6 @@
 import pygame
 from math import pi
+from constants import IMAGE_SIZE
 
 def display_time(win, session, font, color, width, seconds_remaining):
     if session:
@@ -18,7 +19,8 @@ def running_sonic_display(win, current_tick, running_sprites_len, width, height)
     index = int(current_tick / 60 % running_sprites_len) + 1
     try:
         running_sonic = pygame.image.load(f".//visuals//running_sonic//{index}_r.png")
-        win.blit(running_sonic, (width // 2 - running_sonic.get_width() // 2, height - 6/5 * running_sonic.get_height()))
+        scaled_image = pygame.transform.scale(running_sonic, IMAGE_SIZE)
+        win.blit(scaled_image, (width // 2 - scaled_image.get_width() // 2, height - 6/5 * scaled_image.get_height()))
     except pygame.error:
         print(f"Image {index}_r.png missing!")
 
@@ -26,7 +28,7 @@ def waiting_sonic_display(win, current_tick, waiting_sonic_len, width, height):
     index = int(current_tick / 60 % waiting_sonic_len)
     try:
         waiting_sonic = pygame.image.load(f".//visuals//waiting_sonic//{index}_w.png")
-        scaled_image = pygame.transform.scale(waiting_sonic, (128, 144))
+        scaled_image = pygame.transform.scale(waiting_sonic, IMAGE_SIZE)
         win.blit(scaled_image, (width // 2 - scaled_image.get_width() // 2, height - 6/5 * scaled_image.get_height()))
     except pygame.error:
         print(f"Image {index}_w.png missing!")
