@@ -1,6 +1,6 @@
-0:30:0
-0:15:0
-alarm.wav
+0:0:10
+0:0:5
+assets/alarms/alarm.wav
 
 
 The purpouse of this file is to set time for study and rest session.

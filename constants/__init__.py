@@ -1,0 +1,6 @@
+WIDTH = 400
+HEIGHT = 300
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+BLUE = (22, 65, 221)
+FPS = 60
