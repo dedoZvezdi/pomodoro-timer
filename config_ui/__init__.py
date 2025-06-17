@@ -1,4 +1,5 @@
 import tkinter as tk
+import json
 
 class Config_window:
     def __init__(self):
@@ -29,31 +30,46 @@ class Config_window:
         # # #
 
         # hour
-        hour_label = tk.Label(self.root, text="Hour:")
+        hour_label = tk.Label(self.root, text="Hours:")
         hour_label.grid(column=0, row=0, sticky=tk.EW, padx=5, pady=5)
 
         hour_current_value = tk.StringVar(value=0)
-        hour_spin_box = tk.Spinbox(self.root, from_=0, to=24, textvariable=hour_current_value)
-        hour_spin_box.grid(column=1, row=0, sticky=tk.EW, padx=5, pady=5)
+        self.hour_spin_box = tk.Spinbox(self.root, from_=0, to=24, textvariable=hour_current_value)
+        self.hour_spin_box.grid(column=1, row=0, sticky=tk.EW, padx=5, pady=5)
 
         # minutes
-        minute_label = tk.Label(self.root, text="Minute:")
+        minute_label = tk.Label(self.root, text="Minutes:")
         minute_label.grid(column=0, row=1, sticky=tk.EW, padx=5, pady=5)
 
         minute_current_value = tk.StringVar(value=0)
-        minute_spin_box = tk.Spinbox(self.root, from_=0, to=60, textvariable=minute_current_value)
-        minute_spin_box.grid(column=1, row=1, sticky=tk.EW, padx=5, pady=5)
+        self.minute_spin_box = tk.Spinbox(self.root, from_=0, to=60, textvariable=minute_current_value)
+        self.minute_spin_box.grid(column=1, row=1, sticky=tk.EW, padx=5, pady=5)
 
         # seconds
-        minute_label = tk.Label(self.root, text="Seconds:")
-        minute_label.grid(column=0, row=2, sticky=tk.EW, padx=5, pady=5)
+        seconds_label = tk.Label(self.root, text="Seconds:")
+        seconds_label.grid(column=0, row=2, sticky=tk.EW, padx=5, pady=5)
 
         second_current_value = tk.StringVar(value=0)
-        second_spin_box = tk.Spinbox(self.root, from_=0, to=60, textvariable=second_current_value)
-        second_spin_box.grid(column=1, row=2, sticky=tk.EW, padx=5, pady=5)
+        self.second_spin_box = tk.Spinbox(self.root, from_=0, to=60, textvariable=second_current_value)
+        self.second_spin_box.grid(column=1, row=2, sticky=tk.EW, padx=5, pady=5)
 
-        update_button = tk.Button(self.root, text="Update time")
-        update_button.grid(column=0, row=3, padx=5, pady=5, columnspan=2)
+        self.config_button = tk.Button(self.root, text="Change config time", command=self.change_config_button_clicked)
+        self.config_button.grid(column=0, row=3, padx=5, pady=5, columnspan=2)
+
+    def change_config_button_clicked(self):
+        hours = int(self.hour_spin_box.get())
+        minutes = int(self.minute_spin_box.get())
+        seconds = int(self.second_spin_box.get())
+        #print(hours, minutes, seconds)
+
+        dict_time = {
+            "hours" : hours,
+            "minutes" : minutes,
+            "seconds" : seconds 
+        }
+
+        with open("config.json", "w") as outfile:
+            json.dump(dict_time, outfile)
 
     def show(self):
         self.root.mainloop()
