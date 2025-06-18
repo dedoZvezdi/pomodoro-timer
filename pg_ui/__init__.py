@@ -4,6 +4,7 @@ import sys
 from visuals import display_time, running_sonic_display, waiting_sonic_display, display_circle
 from config_ui import Config_window
 from constants import *
+import json
 
 class Pg_window:
     def __init__(self):
@@ -26,7 +27,7 @@ class Pg_window:
         self.timer_stop = True
         self.alarm_path = None
         self.session = True # True for study session || False for pause session
-        self.config_file = "config.txt"
+        self.config_file = "config.json"
 
         self.running_sprites_len = self.count_sprites(".//visuals//running_sonic")
         self.waiting_sonic_len = self.count_sprites(".//visuals//waiting_sonic")
@@ -77,51 +78,30 @@ class Pg_window:
 
     def create_file(self):
         if not os.path.exists(self.config_file):
-            with open(self.config_file, "w") as file:
-                file.write("0:30:0\n")
-                file.write("0:10:0\n")
-                file.write(alarm_file)
+            dict_time = {
+                "study_time" : 30 * 60, # default 30 minutes
+                "rest_time" : 10 * 60, # default 10 minutes
+                "alarm" : "./assets/alarms/alarm.wav" 
+            }
 
-                file.write("\n\n\nThe purpouse of this file is to set time for study and rest session.\n\
-User can also write path of the .wav or .mp3 file that will be played after timer finishes. (third row)\n\
-If the path isn't specifed default alaram sound will be played.\n\n\
-Setting up time:\n\
-First row represent study session.\nSecond row is time for rest session.\n\
-Time must be writen in this format => hour:minutes:seconds (\":\" is separator for integers).\n\n\
-Pause the timer -> SPACE\nRestart the timer by reading new values -> ENTER KEYS\n\
-Change session -> LEFT ARROW, RIGHT ARROW\n\n\
-This file will automaticly be created after deletion.\n\
-If user accidently delete instruction, they can be restored with deleting this file.\n")
+            with open("config.json", "w") as outfile:
+                json.dump(dict_time, outfile)
 
     def read_file(self):
         self.create_file()
         with open(self.config_file, "r") as file:
-            lines = file.readlines()
-            try:
-                study_time = list(map(int, lines[0].strip().split(":")))
-                self.study_seconds = study_time[0] * 3600 + study_time[1] * 60 + study_time[2]
-            except ValueError:
-                self.study_seconds = 0
+            content = file.read()
+            print("File content:", content)
+            data = json.loads(content)
 
-            try:
-                rest_time = list(map(int, lines[1].strip().split(":")))
-                self.rest_seconds = rest_time[0] * 3600 + rest_time[1] * 60 + rest_time[2]
-            except ValueError:
-                self.rest_seconds = 0
-
-            try:
-                self.alarm_path = lines[2][:len(lines[2]) - 1] # [:len(lines[2]) - 1] for \n at the end
-            except IndexError:
-                self.alarm_path = alarm_file
-            except pygame.error:
-                self.alarm_path = alarm_file
-            pygame.mixer.music.load(self.alarm_path)
+            self.study_seconds = data["study_time"]
+            self.rest_seconds = data["rest_time"]
+            self.alarm_path = data["alarm"]
 
             self.seconds_set = self.study_seconds
             self.seconds_remaining = self.study_seconds # program starts with study sessions
-            if self.seconds_remaining > 24 * 3600:
-                self.seconds_remaining = 24 * 3600
-                self.seconds_set = 24 * 3600
+
+            pygame.mixer.music.load(self.alarm_path)
 
     def edit_file(self, event):
         if event.type == pygame.KEYDOWN:
@@ -132,22 +112,16 @@ If user accidently delete instruction, they can be restored with deleting this f
                 self.session = True
                 self.seconds_set = self.study_seconds
                 self.seconds_remaining = self.seconds_set
-                self.create_file()
-                file_name = self.config_file
-                if sys.platform == "win32":
-                    os.startfile(file_name)
-                elif sys.platform == "darwin":
-                    os.system(f"open {file_name}")
-                else:
-                    os.system(f"xdg-open {file_name}")
+                self.read_file()
 
     def play_alarm(self):
+        print(self.alarm_path)
         self.seconds_remaining = self.seconds_set
-        if self.alarm_path:
-            pygame.mixer.music.play(-1)
+        #if self.alarm_path:
+        pygame.mixer.music.play(-1)
 
     def show(self):
-        self.create_file()
+        #self.create_file()
         self.read_file()
         run = True
         last_tick = pygame.time.get_ticks()
