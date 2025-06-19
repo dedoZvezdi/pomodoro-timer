@@ -9,6 +9,7 @@ def display_time(win, session, font, color, width, seconds_remaining):
         session_msg = font.render("Rest", True, color)
     win.blit(session_msg, (width // 2 - session_msg.get_width() // 2, session_msg.get_height() // 2))
     
+    seconds_remaining = round(seconds_remaining)
     hours = seconds_remaining // 3600
     minutes = (seconds_remaining - hours * 3600) // 60
     seconds = (seconds_remaining - hours * 3600 - minutes * 60)
