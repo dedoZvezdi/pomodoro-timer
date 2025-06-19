@@ -91,7 +91,6 @@ class Pg_window:
         self.create_file()
         with open(self.config_file, "r") as file:
             content = file.read()
-            print("File content:", content)
             data = json.loads(content)
 
             self.study_seconds = data["study_time"]
@@ -106,19 +105,20 @@ class Pg_window:
     def edit_file(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                Config_window().show()
-
                 self.timer_stop = True
                 self.session = True
                 self.seconds_set = self.study_seconds
                 self.seconds_remaining = self.seconds_set
+                pygame.mixer.music.stop()
+
+                self.create_file()
+                Config_window().show()
                 self.read_file()
 
     def play_alarm(self):
-        print(self.alarm_path)
         self.seconds_remaining = self.seconds_set
-        #if self.alarm_path:
-        pygame.mixer.music.play(-1)
+        if self.alarm_path:
+            pygame.mixer.music.play(-1)
 
     def show(self):
         #self.create_file()
