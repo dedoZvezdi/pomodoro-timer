@@ -29,8 +29,8 @@ class Pg_window:
         self.session = True # True for study session || False for pause session
         self.config_file = "config.json"
 
-        self.running_sprites_len = self.count_sprites(".//visuals//running_sonic")
-        self.waiting_sonic_len = self.count_sprites(".//visuals//waiting_sonic")
+        self.running_sprites_len = self.count_sprites(".//visuals//sonic//running_sonic")
+        self.waiting_sonic_len = self.count_sprites(".//visuals//sonic//waiting_sonic")
 
     def count_sprites(self, directory):
         items = os.listdir(directory)
