@@ -8,7 +8,7 @@ RED = (255, 0, 0)
 
 FPS = 60
 
-IMAGE_SIZE = (130, 140)
+IMAGE_SIZE = (HEIGHT // 2, HEIGHT // 2)
 
 SPRITES = {
     "sonic" : {
