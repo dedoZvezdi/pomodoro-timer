@@ -16,6 +16,7 @@ There's also animations with sonic sprites.
 ## Controls
 
 - **Left/Right Arrow Keys**: Switch between Study and Rest sessions
+- **Up/Down Arrow Keys**: Change character
 - **Spacebar**: Start/Stop timer
 - **Escape**: Open the configuration window
 - **Enter**: Load updated times from configuration file

@@ -8,7 +8,6 @@ def count_sprites(directory):
     files = [item for item in items if os.path.isfile(os.path.join(directory, item))]
     return len(files)
 
-
 def display_time(win, session, font, color, width, seconds_remaining):
     if session:
         session_msg = font.render("Study sesion", True, color)
