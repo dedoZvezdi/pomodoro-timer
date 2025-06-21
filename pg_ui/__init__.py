@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from visuals import display_time, running_sonic_display, waiting_sonic_display, display_circle
+from visuals import display_time, running_display, waiting_display, display_circle
 from config_ui import Config_window
 from constants import *
 import json
@@ -29,22 +29,23 @@ class Pg_window:
         self.session = True # True for study session || False for pause session
         self.config_file = "config.json"
 
-        self.running_sprites_len = self.count_sprites(".//visuals//sonic//running_sonic")
-        self.waiting_sonic_len = self.count_sprites(".//visuals//sonic//waiting_sonic")
-
-    def count_sprites(self, directory):
-        items = os.listdir(directory)
-        files = [item for item in items if os.path.isfile(os.path.join(directory, item))]
-        return len(files)
+        self.character_index = 0
+        self.characters = tuple(SPRITES.keys())
 
     def draw_scene(self, current_tick):
+        circle_color = None
+        if self.characters[self.character_index] == "sonic":
+            circle_color = BLUE
+        elif self.characters[self.character_index] == "shadow":
+            circle_color = RED 
+
         self.window.fill(WHITE)
-        display_circle(self.window, BLUE, WIDTH, HEIGHT, self.seconds_remaining, self.seconds_set)
+        display_circle(self.window, circle_color, WIDTH, HEIGHT, self.seconds_remaining, self.seconds_set)
         display_time(self.window, self.session, self.font1, BLACK, WIDTH, self.seconds_remaining)
         if self.timer_stop:
-            waiting_sonic_display(self.window, current_tick, self.waiting_sonic_len, WIDTH, HEIGHT)
+            waiting_display(self.window, current_tick, WIDTH, HEIGHT, SPRITES[self.characters[self.character_index]]["waiting"])
         else:
-            running_sonic_display(self.window, current_tick , self.running_sprites_len, WIDTH, HEIGHT)
+            running_display(self.window, current_tick, WIDTH, HEIGHT, SPRITES[self.characters[self.character_index]]["running"])
         pygame.display.update()
 
     def toogle_timer(self, event):
@@ -76,6 +77,19 @@ class Pg_window:
                     self.seconds_set = self.rest_seconds
                 self.seconds_remaining = self.seconds_set
 
+    def change_character(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.character_index += 1
+
+            if event.key == pygame.K_DOWN:
+                self.character_index -= 1
+
+            if self.character_index >= len(self.characters):
+                self.character_index = 0
+            if self.character_index < 0:
+                self.character_index = len(self.characters) - 1
+
     def create_file(self):
         if not os.path.exists(self.config_file):
             dict_time = {
@@ -100,7 +114,10 @@ class Pg_window:
             self.seconds_set = self.study_seconds
             self.seconds_remaining = self.study_seconds # program starts with study sessions
 
-            pygame.mixer.music.load(self.alarm_path)
+            try:
+                pygame.mixer.music.load(self.alarm_path)
+            except pygame.error:
+                self.alarm_path = None
 
     def edit_file(self, event):
         if event.type == pygame.KEYDOWN:
@@ -116,7 +133,6 @@ class Pg_window:
                 self.read_file()
 
     def play_alarm(self):
-        self.seconds_remaining = self.seconds_set
         if self.alarm_path:
             pygame.mixer.music.play(-1)
 
@@ -155,5 +171,6 @@ class Pg_window:
                 self.restart_timer(event)
                 self.switch_session(event)
                 self.edit_file(event)
+                self.change_character(event)
 
         pygame.quit()

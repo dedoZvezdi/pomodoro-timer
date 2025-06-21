@@ -1,6 +1,13 @@
 import pygame
 from math import pi
 from constants import IMAGE_SIZE
+import os
+
+def count_sprites(directory):
+    items = os.listdir(directory)
+    files = [item for item in items if os.path.isfile(os.path.join(directory, item))]
+    return len(files)
+
 
 def display_time(win, session, font, color, width, seconds_remaining):
     if session:
@@ -16,19 +23,19 @@ def display_time(win, session, font, color, width, seconds_remaining):
     msg = font.render(f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}", True, color)
     win.blit(msg, (width // 2 - msg.get_width() // 2, session_msg.get_height() // 2 * 3 + msg.get_height() // 2))
 
-def running_sonic_display(win, current_tick, running_sprites_len, width, height):
-    index = int(current_tick / 60 % running_sprites_len) + 1
+def running_display(win, current_tick, width, height, path):
+    index = int(current_tick / 60 % count_sprites(path))
     try:
-        running_sonic = pygame.image.load(f".//visuals//sonic//running_sonic//{index}_r.png")
+        running_sonic = pygame.image.load(f"{path}//{index}_r.png")
         scaled_image = pygame.transform.scale(running_sonic, IMAGE_SIZE)
         win.blit(scaled_image, (width // 2 - scaled_image.get_width() // 2, height - 6/5 * scaled_image.get_height()))
     except pygame.error:
         print(f"Image {index}_r.png missing!")
 
-def waiting_sonic_display(win, current_tick, waiting_sonic_len, width, height):
-    index = int(current_tick / 60 % waiting_sonic_len)
+def waiting_display(win, current_tick, width, height, path):
+    index = int(current_tick / 60 % count_sprites(path))
     try:
-        waiting_sonic = pygame.image.load(f".//visuals//sonic//waiting_sonic//{index}_w.png")
+        waiting_sonic = pygame.image.load(f"{path}//{index}_w.png")
         scaled_image = pygame.transform.scale(waiting_sonic, IMAGE_SIZE)
         win.blit(scaled_image, (width // 2 - scaled_image.get_width() // 2, height - 6/5 * scaled_image.get_height()))
     except pygame.error:
