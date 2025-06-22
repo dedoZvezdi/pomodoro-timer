@@ -5,6 +5,8 @@ from config_ui import Config_window
 from constants import *
 import json
 from .button import Button
+from .info_window import Info_window
+from multiprocessing import Process
 
 class Pg_window:
     def __init__(self):
@@ -35,6 +37,9 @@ class Pg_window:
         gap = 10
         self.info_button = Button(WIDTH - BUTTON_WIDTH - gap, gap, BUTTON_WIDTH, BUTTON_HEIGHT, pygame.K_i)
 
+        self.info_window = Info_window()
+        self.show_info_window = False
+
     def draw_scene(self, current_tick):
         circle_color = None
         if self.characters[self.character_index] == "sonic":
@@ -43,13 +48,20 @@ class Pg_window:
             circle_color = RED 
 
         self.window.fill(WHITE)
+
         self.info_button.draw(self.window)
-        display_circle(self.window, circle_color, WIDTH, HEIGHT, self.seconds_remaining, self.seconds_set)
         display_time(self.window, self.session, self.font1, BLACK, WIDTH, self.seconds_remaining)
-        if self.timer_stop:
-            waiting_display(self.window, current_tick, WIDTH, HEIGHT, SPRITES[self.characters[self.character_index]]["waiting"])
+        
+        if self.show_info_window:
+            self.info_window.show(self.window)
         else:
-            running_display(self.window, current_tick, WIDTH, HEIGHT, SPRITES[self.characters[self.character_index]]["running"])
+            display_circle(self.window, circle_color, WIDTH, HEIGHT, self.seconds_remaining, self.seconds_set)
+            if self.timer_stop:
+                waiting_display(self.window, current_tick, WIDTH, HEIGHT, SPRITES[self.characters[self.character_index]]["waiting"])
+            else:
+                running_display(self.window, current_tick, WIDTH, HEIGHT, SPRITES[self.characters[self.character_index]]["running"])
+
+        
         pygame.display.update()
 
     def toogle_timer(self, event):
@@ -99,7 +111,7 @@ class Pg_window:
             dict_time = {
                 "study_time" : 30 * 60, # default 30 minutes
                 "rest_time" : 10 * 60, # default 10 minutes
-                "alarm" : "./assets/alarms/alarm.wav" 
+                "alarm" : "./audio/alarms/alarm.wav" 
             }
 
             with open("config.json", "w") as outfile:
@@ -181,6 +193,7 @@ class Pg_window:
                 self.edit_file(event)
                 self.change_character(event)
 
-                self.info_button.execute_functino_if_pressed(event, mouse_pos, lambda: print('lol')) # TO DO: add info windows
+                if self.info_button.is_shorcut_pressed(event) or self.info_button.is_clicked(event, mouse_pos):
+                    self.show_info_window = not self.show_info_window
 
         pygame.quit()

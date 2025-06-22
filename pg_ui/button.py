@@ -44,8 +44,3 @@ class Button:
             if event.key == self.shortcut:
                 return True
         return False
-    
-    def execute_functino_if_pressed(self, event, mouse_pos, function = None):
-        if function != None:
-            if self.is_clicked(event, mouse_pos) or self.is_shorcut_pressed(event):
-                function()
