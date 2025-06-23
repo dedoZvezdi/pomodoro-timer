@@ -155,7 +155,6 @@ class Config_window:
         file_path = filedialog.askopenfilename(title="Select Alarm",
                                     initialdir="./audio/alarms", 
                                     filetypes=[("All Files", ("*.mp3", "*.wav")), ("MP3", ("*.mp3")), ("WAV", "*.wav*")])
-        print("Selected File:", file_path)
         self.alarm_path = file_path
 
     def show(self):
