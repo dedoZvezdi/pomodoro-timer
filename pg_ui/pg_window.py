@@ -49,7 +49,7 @@ class Pg_window:
 
         self.window.fill(WHITE)
 
-        self.info_button.draw(self.window)
+        self.info_button.draw(self.window, self.show_info_window)
         display_time(self.window, self.session, self.font1, BLACK, WIDTH, self.seconds_remaining)
         
         if self.show_info_window:

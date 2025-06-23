@@ -1,1 +1,1 @@
-from .pg_window import Pg_window, Info_window
+from .pg_window import Pg_window

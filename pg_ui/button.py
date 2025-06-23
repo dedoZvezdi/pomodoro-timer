@@ -12,9 +12,21 @@ class Button:
         self.color = color
         self.actual_color = color
 
-    def draw(self, win):
+        info_icon = pg.image.load(f".//visuals//info//info.png")
+        self.info_icon = pg.transform.scale(info_icon, (self.width, self.height))
+
+        x_icon = pg.image.load(f".//visuals//info//x.png")
+        self.x_icon = pg.transform.scale(x_icon, (self.width, self.height))
+
+    def draw(self, win, cond=False):
         pg.draw.rect(win, self.actual_color, (self.x, self.y, self.width, self.height))
         pg.draw.rect(win, self.border_color, (self.x, self.y, self.width, self.height), 1)
+
+        if cond:
+            win.blit(self.x_icon, (self.x, self.y))
+        else:
+            win.blit(self.info_icon, (self.x, self.y))
+
 
     def is_mouse_in(self, mouse_pos):
         if(self.x <= mouse_pos[0] <= self.x + self.width and

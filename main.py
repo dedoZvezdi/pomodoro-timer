@@ -1,4 +1,4 @@
-from pg_ui import Pg_window, Info_window
+from pg_ui import Pg_window
 
 if __name__ == "__main__":
     pg_win = Pg_window()
