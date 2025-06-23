@@ -114,8 +114,21 @@ class Pg_window:
                 "alarm" : "./audio/alarms/alarm.wav" 
             }
 
-            with open("config.json", "w") as outfile:
+            with open(self.config_file, "w") as outfile:
                 json.dump(dict_time, outfile)
+
+    def set_time_from_json(self, data):
+        self.study_seconds = data["study_time"]
+        self.rest_seconds = data["rest_time"]
+        self.alarm_path = data["alarm"]
+
+    def handle_json_error(self):
+        os.remove(self.config_file)
+        self.create_file()
+        with open(self.config_file, "r") as file:
+            content = file.read()
+            data = json.loads(content)
+        self.set_time_from_json(data)
 
     def read_file(self):
         self.create_file()
@@ -123,17 +136,22 @@ class Pg_window:
             content = file.read()
             data = json.loads(content)
 
-            self.study_seconds = data["study_time"]
-            self.rest_seconds = data["rest_time"]
-            self.alarm_path = data["alarm"]
+        try:
+            self.set_time_from_json(data)
+        except KeyError:
+            self.handle_json_error()
 
-            self.seconds_set = self.study_seconds
-            self.seconds_remaining = self.study_seconds # program starts with study sessions
 
-            try:
-                pygame.mixer.music.load(self.alarm_path)
-            except pygame.error:
-                self.alarm_path = None
+        self.seconds_set = self.study_seconds
+        self.seconds_remaining = self.study_seconds # program starts with study sessions
+
+        if (not isinstance(self.seconds_set, int)) or (not isinstance(self.seconds_remaining, int)):
+            self.handle_json_error()
+
+        try:
+            pygame.mixer.music.load(self.alarm_path)
+        except pygame.error:
+            self.alarm_path = None
 
     def edit_file(self, event):
         if event.type == pygame.KEYDOWN:
