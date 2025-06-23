@@ -36,7 +36,7 @@ class Info_window:
         self.second_row_msg = font.render("Change character", True, BLACK)
         self.third_row_msg = font.render("Open/close info window", True, BLACK)
         self.forth_row_msg = font.render("Open config window", True, BLACK)
-        self.fifth_row_msg = font.render("Pause/unpase", True, BLACK)
+        self.fifth_row_msg = font.render("Pause/resume", True, BLACK)
         self.sixth_row_msg = font.render("Restart timer", True, BLACK)
 
     def show(self, win):
